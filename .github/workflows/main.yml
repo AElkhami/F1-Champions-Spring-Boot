@@ -2,7 +2,7 @@ name: CI/CD Pipeline to GHCR
 
 on:
   push:
-    branches: [ main ]  # Change to 'master' if that's your actual default branch
+    branches: [ master ]
 
 jobs:
   build-and-push:
