@@ -67,4 +67,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/f1-champions:latest
+          tags: ghcr.io/${{ github.repository_owner || 'aelkhami' | downcase }}/f1-champions:latest
