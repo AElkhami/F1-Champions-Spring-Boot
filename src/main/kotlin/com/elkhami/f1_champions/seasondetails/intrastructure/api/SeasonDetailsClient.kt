@@ -1,21 +1,37 @@
 package com.elkhami.f1_champions.seasondetails.intrastructure.api
 
 import com.elkhami.f1_champions.seasondetails.domain.model.SeasonDetail
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
+import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.awaitBody
 
 @Service
-class SeasonDetailsClient (private val webClientBuilder: WebClient.Builder) {
-    private val baseUrl = "https://ergast.com/api/f1"
+class SeasonDetailsClient(
+    private val webClientBuilder: WebClient.Builder,
+    registry: CircuitBreakerRegistry
+) {
+    @Value("\${f1.api.base-url}")
+    private lateinit var baseUrl: String
 
-    fun fetchSeasonDetails(season: String): List<SeasonDetail> {
-        val response = webClientBuilder.build()
-            .get()
-            .uri("$baseUrl/$season/results/1.json")
-            .retrieve()
-            .bodyToMono(String::class.java)
-            .block()
+    private val circuitBreaker = registry.circuitBreaker("seasonDetailsApi")
 
-        return SeasonDetailsParser.parseSeasonDetails(season, response)
+    suspend fun fetchSeasonDetails(season: String): List<SeasonDetail> {
+        return runCatching {
+            circuitBreaker.executeSuspendFunction {
+                val response = webClientBuilder.build()
+                    .get()
+                    .uri("$baseUrl/$season/results/1.json")
+                    .retrieve()
+                    .awaitBody<String>()
+
+                SeasonDetailsParser.parseSeasonDetails(season, response)
+            }
+        }.getOrElse {
+            println("⚠️ Failed to fetch details for $season: ${it.message}")
+            emptyList()
+        }
     }
 }
