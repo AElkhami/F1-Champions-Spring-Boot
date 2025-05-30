@@ -9,17 +9,16 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 class SeasonDetailsClientConfig {
-
     @Bean
     fun seasonDetailsClient(
         @Value("\${f1.api.base-url}") baseUrl: String,
         webClientBuilder: WebClient.Builder,
-        retryRegistry: RetryRegistry
+        retryRegistry: RetryRegistry,
     ): SeasonDetailsClient {
         return SeasonDetailsClient(
             webClientBuilder = webClientBuilder,
             baseUrl = baseUrl,
-            retry = retryRegistry.retry("season-details-retry")
+            retry = retryRegistry.retry("season-details-retry"),
         )
     }
 }

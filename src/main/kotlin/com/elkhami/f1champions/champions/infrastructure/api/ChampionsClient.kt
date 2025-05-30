@@ -18,7 +18,7 @@ class ChampionsClient(
     private val baseUrl: String,
     private val circuitBreaker: CircuitBreaker,
     private val rateLimiter: RateLimiter,
-    private val retry: Retry
+    private val retry: Retry,
 ) {
     private val logger = loggerWithPrefix()
 
@@ -39,12 +39,13 @@ class ChampionsClient(
     }
 
     internal suspend fun fetchFromApi(year: Int): Champion? {
-        val response = webClientBuilder.build()
-            .get()
-            .uri("$baseUrl/$year/driverStandings/1.json")
-            .retrieve()
-            .bodyToMono(String::class.java)
-            .awaitSingle()
+        val response =
+            webClientBuilder.build()
+                .get()
+                .uri("$baseUrl/$year/driverStandings/1.json")
+                .retrieve()
+                .bodyToMono(String::class.java)
+                .awaitSingle()
 
         return ChampionParser.parseChampions(response).firstOrNull()
     }

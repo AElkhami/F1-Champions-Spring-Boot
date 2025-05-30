@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 @Component
 class DataInitializer(
     private val dataSeeder: DataSeeder,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
 ) {
     private val logger = loggerWithPrefix()
 

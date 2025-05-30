@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.BeforeTest
 
 class DataInitializerTest {
-
     private val dataSeeder = mockk<DataSeeder>(relaxed = true)
     private val testDispatcher = StandardTestDispatcher()
     private val testScope = CoroutineScope(testDispatcher)
@@ -24,18 +23,19 @@ class DataInitializerTest {
     }
 
     @Test
-    fun `onAppReady should call dataSeeder seed`() = runTest {
-        dataInitializer.onAppReady()
-        testDispatcher.scheduler.advanceUntilIdle()
-        coVerify(exactly = 1) { dataSeeder.seed() }
-    }
+    fun `onAppReady should call dataSeeder seed`() =
+        runTest {
+            dataInitializer.onAppReady()
+            testDispatcher.scheduler.advanceUntilIdle()
+            coVerify(exactly = 1) { dataSeeder.seed() }
+        }
 
     @Test
-    fun `onAppReady should handle exception from dataSeeder seed`() = runTest {
-        coEvery { dataSeeder.seed() } throws RuntimeException("Test exception")
-        dataInitializer.onAppReady()
-        testDispatcher.scheduler.advanceUntilIdle()
-        coVerify(exactly = 1) { dataSeeder.seed() }
-    }
+    fun `onAppReady should handle exception from dataSeeder seed`() =
+        runTest {
+            coEvery { dataSeeder.seed() } throws RuntimeException("Test exception")
+            dataInitializer.onAppReady()
+            testDispatcher.scheduler.advanceUntilIdle()
+            coVerify(exactly = 1) { dataSeeder.seed() }
+        }
 }
-

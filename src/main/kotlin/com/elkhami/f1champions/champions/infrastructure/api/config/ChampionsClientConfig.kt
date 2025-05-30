@@ -11,21 +11,20 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 class ChampionsClientConfig {
-
     @Bean
     fun championsClient(
         @Value("\${f1.api.base-url}") baseUrl: String,
         webClientBuilder: WebClient.Builder,
         circuitBreakerRegistry: CircuitBreakerRegistry,
         rateLimiterRegistry: RateLimiterRegistry,
-        retryRegistry: RetryRegistry
+        retryRegistry: RetryRegistry,
     ): ChampionsClient {
         return ChampionsClient(
             webClientBuilder = webClientBuilder,
             baseUrl = baseUrl,
             circuitBreaker = circuitBreakerRegistry.circuitBreaker("champions-client"),
             rateLimiter = rateLimiterRegistry.rateLimiter("champions-rate-limiter"),
-            retry = retryRegistry.retry("champions-retry")
+            retry = retryRegistry.retry("champions-retry"),
         )
     }
 }

@@ -4,36 +4,36 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class ChampionsParserTest {
-
     @Test
     fun `parseChampions should return list of Champion`() {
-        val json = """
-        {
-          "MRData": {
-            "StandingsTable": {
-              "StandingsLists": [
-                {
-                  "season": "2021",
-                  "DriverStandings": [
+        val json =
+            """
+            {
+              "MRData": {
+                "StandingsTable": {
+                  "StandingsLists": [
                     {
-                      "Driver": {
-                        "driverId": "max",
-                        "givenName": "Max",
-                        "familyName": "Verstappen"
-                      },
-                      "Constructors": [
+                      "season": "2021",
+                      "DriverStandings": [
                         {
-                          "name": "Red Bull"
+                          "Driver": {
+                            "driverId": "max",
+                            "givenName": "Max",
+                            "familyName": "Verstappen"
+                          },
+                          "Constructors": [
+                            {
+                              "name": "Red Bull"
+                            }
+                          ]
                         }
                       ]
                     }
                   ]
                 }
-              ]
+              }
             }
-          }
-        }
-        """.trimIndent()
+            """.trimIndent()
 
         val result = ChampionParser.parseChampions(json)
 

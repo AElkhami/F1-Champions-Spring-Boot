@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class F1SeasonDetailsService(
-    private val seasonDetailsRepository: SeasonDetailsRepository
+    private val seasonDetailsRepository: SeasonDetailsRepository,
 ) : SeasonDetailsService {
-
-    override fun getSeasonDetails(season: String): List<SeasonDetail> =
-        seasonDetailsRepository.findBySeason(season).map { it.toDomain() }
-
+    override fun getSeasonDetails(season: String): List<SeasonDetail> = seasonDetailsRepository.findBySeason(season).map { it.toDomain() }
 }

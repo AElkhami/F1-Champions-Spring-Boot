@@ -4,8 +4,10 @@ import com.elkhami.f1champions.seasondetails.domain.model.SeasonDetail
 import com.fasterxml.jackson.databind.ObjectMapper
 
 object SeasonDetailsParser {
-
-    fun parseSeasonDetails(season: String, json: String?): List<SeasonDetail> {
+    fun parseSeasonDetails(
+        season: String,
+        json: String?,
+    ): List<SeasonDetail> {
         val root = ObjectMapper().readTree(json)
         return root["MRData"]["RaceTable"]["Races"].map {
             val winner = it["Results"][0]["Driver"]
@@ -17,7 +19,7 @@ object SeasonDetailsParser {
                 date = it["date"].asText(),
                 winnerId = winner["driverId"].asText(),
                 winnerName = "${winner["givenName"].asText()} ${winner["familyName"].asText()}",
-                constructor = constructor["name"].asText()
+                constructor = constructor["name"].asText(),
             )
         }
     }

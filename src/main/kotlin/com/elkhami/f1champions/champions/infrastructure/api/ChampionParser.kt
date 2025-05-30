@@ -13,7 +13,7 @@ object ChampionParser {
                 season = it["season"].asText(),
                 driverId = driver["driverId"].asText(),
                 driverName = "${driver["givenName"].asText()} ${driver["familyName"].asText()}",
-                constructor = constructor["name"].asText()
+                constructor = constructor["name"].asText(),
             )
         }
     }

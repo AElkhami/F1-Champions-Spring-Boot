@@ -20,6 +20,5 @@ data class SeasonDetailsEntity(
     val winnerId: String,
     @Column(name = "winner_name")
     val winnerName: String,
-    val constructor: String
+    val constructor: String,
 )
-

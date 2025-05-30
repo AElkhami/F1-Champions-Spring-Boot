@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient
 class SeasonDetailsClient(
     private val webClientBuilder: WebClient.Builder,
     private val baseUrl: String,
-    private val retry: Retry
+    private val retry: Retry,
 ) {
     private val logger = loggerWithPrefix()
 
@@ -29,12 +29,13 @@ class SeasonDetailsClient(
     }
 
     internal suspend fun fetchFromApi(season: String): List<SeasonDetail> {
-        val response = webClientBuilder.build()
-            .get()
-            .uri("$baseUrl/$season/results/1.json")
-            .retrieve()
-            .bodyToMono(String::class.java)
-            .awaitSingle()
+        val response =
+            webClientBuilder.build()
+                .get()
+                .uri("$baseUrl/$season/results/1.json")
+                .retrieve()
+                .bodyToMono(String::class.java)
+                .awaitSingle()
 
         return SeasonDetailsParser.parseSeasonDetails(season, response)
     }

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.BeforeTest
 
 class F1SeasonDetailsServiceTest {
-
     private val seasonDetailsRepository = mockk<SeasonDetailsRepository>()
     private lateinit var service: F1SeasonDetailsService
 
@@ -21,15 +20,16 @@ class F1SeasonDetailsServiceTest {
     @Test
     fun `getSeasonDetails returns mapped domain list`() {
         val season = "2020"
-        val entity = SeasonDetailsEntity(
-            season = "2020",
-            round = "1",
-            raceName = "Australian GP",
-            date = "2020-03-15",
-            winnerId = "hamilton",
-            winnerName = "Lewis Hamilton",
-            constructor = "Mercedes"
-        )
+        val entity =
+            SeasonDetailsEntity(
+                season = "2020",
+                round = "1",
+                raceName = "Australian GP",
+                date = "2020-03-15",
+                winnerId = "hamilton",
+                winnerName = "Lewis Hamilton",
+                constructor = "Mercedes",
+            )
 
         every { seasonDetailsRepository.findBySeason(season) } returns listOf(entity)
 

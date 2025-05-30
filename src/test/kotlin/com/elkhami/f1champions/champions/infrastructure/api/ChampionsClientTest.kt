@@ -13,7 +13,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class ChampionsClientTest {
-
     private val webClientBuilder = mockk<WebClient.Builder>(relaxed = true)
     private val webClient = mockk<WebClient>(relaxed = true)
     private val uriSpec = mockk<WebClient.RequestHeadersUriSpec<*>>(relaxed = true)
@@ -29,29 +28,32 @@ class ChampionsClientTest {
         every { uriSpec.uri(any<String>()) } returns headersSpec
         every { headersSpec.retrieve() } returns responseSpec
 
-        client = ChampionsClient(
-            webClientBuilder = webClientBuilder,
-            baseUrl = "http://mock-api.com",
-            circuitBreaker = mockk(relaxed = true),
-            rateLimiter = mockk(relaxed = true),
-            retry = mockk(relaxed = true)
-        )
+        client =
+            ChampionsClient(
+                webClientBuilder = webClientBuilder,
+                baseUrl = "http://mock-api.com",
+                circuitBreaker = mockk(relaxed = true),
+                rateLimiter = mockk(relaxed = true),
+                retry = mockk(relaxed = true),
+            )
     }
 
     @Test
-    fun `fetchFromApi returns parsed champion`() = runTest {
-        val json = """{ "mock": "response" }"""
+    fun `fetchFromApi returns parsed champion`() =
+        runTest {
+            val json = """{ "mock": "response" }"""
 
-        every { responseSpec.bodyToMono(String::class.java) } returns Mono.just(json)
+            every { responseSpec.bodyToMono(String::class.java) } returns Mono.just(json)
 
-        mockkObject(ChampionParser)
-        every { ChampionParser.parseChampions(json) } returns listOf(
-            Champion("2020", "hamilton", "Lewis Hamilton", "Mercedes")
-        )
+            mockkObject(ChampionParser)
+            every { ChampionParser.parseChampions(json) } returns
+                listOf(
+                    Champion("2020", "hamilton", "Lewis Hamilton", "Mercedes"),
+                )
 
-        val result = client.fetchFromApi(2020)
+            val result = client.fetchFromApi(2020)
 
-        assertNotNull(result)
-        assertEquals("2020", result.season)
-    }
+            assertNotNull(result)
+            assertEquals("2020", result.season)
+        }
 }

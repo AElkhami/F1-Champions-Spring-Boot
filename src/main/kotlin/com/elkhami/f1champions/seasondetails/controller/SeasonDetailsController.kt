@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/f1")
 class SeasonDetailsController(private val service: SeasonDetailsService) {
-
     @GetMapping("/champions/{season}")
-    fun getSeasonDetails(@PathVariable season: String): List<SeasonDetail> =
-        service.getSeasonDetails(season)
+    fun getSeasonDetails(
+        @PathVariable season: String,
+    ): List<SeasonDetail> = service.getSeasonDetails(season)
 }

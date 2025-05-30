@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class F1ChampionsServiceTest {
-
     private lateinit var service: ChampionsService
 
     private val championRepo = mockk<ChampionRepository>()

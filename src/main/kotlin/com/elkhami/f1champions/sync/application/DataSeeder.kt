@@ -14,11 +14,14 @@ class DataSeeder(
     private val championsClient: ChampionsClient,
     private val seasonDetailsClient: SeasonDetailsClient,
     private val championRepository: ChampionRepository,
-    private val seasonDetailsRepository: SeasonDetailsRepository
+    private val seasonDetailsRepository: SeasonDetailsRepository,
 ) {
     private val logger = loggerWithPrefix()
 
-    suspend fun seed(fromYear: Int = 2005, toYear: Int = 2025) {
+    suspend fun seed(
+        fromYear: Int = 2005,
+        toYear: Int = 2025,
+    ) {
         logger.info("🚀 Seeding champions and season details ($fromYear–$toYear)")
 
         for (year in fromYear..toYear) {
@@ -49,5 +52,4 @@ class DataSeeder(
 
         logger.info("✅ Seeding complete.")
     }
-
 }

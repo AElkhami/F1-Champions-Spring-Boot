@@ -7,5 +7,5 @@ data class SeasonDetail(
     val date: String,
     val winnerId: String,
     val winnerName: String,
-    val constructor: String
+    val constructor: String,
 )

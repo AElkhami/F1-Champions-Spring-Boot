@@ -10,7 +10,5 @@ import org.springframework.stereotype.Service
 class F1ChampionsService(
     private val championRepo: ChampionRepository,
 ) : ChampionsService {
-
-    override fun getChampions(): List<Champion> =
-        championRepo.findAll().map { it.toDomain() }
+    override fun getChampions(): List<Champion> = championRepo.findAll().map { it.toDomain() }
 }

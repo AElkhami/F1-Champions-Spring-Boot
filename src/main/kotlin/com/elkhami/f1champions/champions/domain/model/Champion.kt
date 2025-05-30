@@ -4,5 +4,5 @@ data class Champion(
     val season: String,
     val driverId: String,
     val driverName: String,
-    val constructor: String
+    val constructor: String,
 )

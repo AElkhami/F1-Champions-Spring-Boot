@@ -5,37 +5,37 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class SeasonDetailsParserTest {
-
     @Test
     fun `parseRaceWinners should return list of RaceResult`() {
-        val json = """
-        {
-          "MRData": {
-            "RaceTable": {
-              "Races": [
-                {
-                  "season": "2021",
-                  "round": "1",
-                  "raceName": "Bahrain Grand Prix",
-                  "date": "2021-03-28",
-                  "Results": [
+        val json =
+            """
+            {
+              "MRData": {
+                "RaceTable": {
+                  "Races": [
                     {
-                      "Driver": {
-                        "driverId": "max",
-                        "givenName": "Max",
-                        "familyName": "Verstappen"
-                      },
-                      "Constructor": {
-                        "name": "Red Bull"
-                      }
+                      "season": "2021",
+                      "round": "1",
+                      "raceName": "Bahrain Grand Prix",
+                      "date": "2021-03-28",
+                      "Results": [
+                        {
+                          "Driver": {
+                            "driverId": "max",
+                            "givenName": "Max",
+                            "familyName": "Verstappen"
+                          },
+                          "Constructor": {
+                            "name": "Red Bull"
+                          }
+                        }
+                      ]
                     }
                   ]
                 }
-              ]
+              }
             }
-          }
-        }
-        """.trimIndent()
+            """.trimIndent()
 
         val result = SeasonDetailsParser.parseSeasonDetails("2021", json)
 

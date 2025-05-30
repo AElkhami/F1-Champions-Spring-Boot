@@ -16,5 +16,5 @@ data class ChampionEntity(
     val driverId: String,
     @Column(name = "driver_name")
     val driverName: String,
-    val constructor: String
+    val constructor: String,
 )
