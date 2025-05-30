@@ -164,7 +164,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.F1_DEPLOY_SECRET }}
 
   dockerize:
-    name: Build and Push Docker Image to GHCR
+    name: Push Docker Image to GHCR
     runs-on: ubuntu-latest
     needs: build
     steps:
