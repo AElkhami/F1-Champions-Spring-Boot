@@ -1,6 +1,7 @@
 package com.elkhami.f1_champions.champions.infrastructure.api
 
 import com.elkhami.f1_champions.champions.domain.model.Champion
+import com.elkhami.f1_champions.utils.loggerWithPrefix
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import io.github.resilience4j.kotlin.ratelimiter.executeSuspendFunction
@@ -19,6 +20,7 @@ class ChampionsClient(
     rateLimiterRegistry: RateLimiterRegistry,
     retryRegistry: RetryRegistry
 ) {
+    private val logger = loggerWithPrefix()
 
     @Value("\${f1.api.base-url}")
     private lateinit var baseUrl: String
@@ -40,12 +42,12 @@ class ChampionsClient(
                             .awaitBody<String>()
 
                         ChampionParser.parseChampions(response).firstOrNull()
-                            ?.also { println("✅ Got champion for $year") }
+                            ?.also { logger.info("✅ Got champion for $year") }
                     }
                 }
             }
         }.getOrElse {
-            println("⚠️ Failed to fetch champion for $year: ${it.message}")
+            logger.info("⚠️ Failed to fetch champion for $year: ${it.message}")
             null
         }
     }

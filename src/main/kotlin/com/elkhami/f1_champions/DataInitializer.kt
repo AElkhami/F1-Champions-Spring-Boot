@@ -1,6 +1,7 @@
 package com.elkhami.f1_champions
 
 import com.elkhami.f1_champions.sync.application.DataSeeder
+import com.elkhami.f1_champions.utils.loggerWithPrefix
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.springframework.boot.context.event.ApplicationReadyEvent
@@ -12,14 +13,16 @@ class DataInitializer(
     private val dataSeeder: DataSeeder,
     private val scope: CoroutineScope
 ) {
+    private val logger = loggerWithPrefix()
+
     @EventListener(ApplicationReadyEvent::class)
     fun onAppReady() {
-        println("🚀 App started. Beginning data seeding...")
+        logger.info("🚀 App started. Beginning data seeding...")
         scope.launch {
             try {
                 dataSeeder.seed()
             } catch (e: Exception) {
-                println("❌ Failed during seeding: ${e.message}")
+                logger.info("❌ Failed during seeding: ${e.message}")
             }
         }
     }

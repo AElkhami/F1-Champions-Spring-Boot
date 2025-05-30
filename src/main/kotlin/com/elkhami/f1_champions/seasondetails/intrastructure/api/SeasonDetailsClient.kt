@@ -1,6 +1,7 @@
 package com.elkhami.f1_champions.seasondetails.intrastructure.api
 
 import com.elkhami.f1_champions.seasondetails.domain.model.SeasonDetail
+import com.elkhami.f1_champions.utils.loggerWithPrefix
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.springframework.beans.factory.annotation.Value
@@ -13,6 +14,8 @@ class SeasonDetailsClient(
     private val webClientBuilder: WebClient.Builder,
     registry: CircuitBreakerRegistry
 ) {
+    private val logger = loggerWithPrefix()
+
     @Value("\${f1.api.base-url}")
     private lateinit var baseUrl: String
 
@@ -30,7 +33,7 @@ class SeasonDetailsClient(
                 SeasonDetailsParser.parseSeasonDetails(season, response)
             }
         }.getOrElse {
-            println("⚠️ Failed to fetch details for $season: ${it.message}")
+            logger.info("⚠️ Failed to fetch details for $season: ${it.message}")
             emptyList()
         }
     }

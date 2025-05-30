@@ -1,4 +1,4 @@
-package com.elkhami.f1_champions
+package com.elkhami.f1_champions.utils
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
