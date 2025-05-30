@@ -4,46 +4,54 @@ import com.elkhami.f1_champions.champions.domain.model.Champion
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
-import io.mockk.unmockkObject
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import kotlinx.coroutines.test.runTest
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClient.*
 import reactor.core.publisher.Mono
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class ChampionsClientTest {
 
+    private val webClientBuilder = mockk<WebClient.Builder>(relaxed = true)
+    private val webClient = mockk<WebClient>(relaxed = true)
+    private val uriSpec = mockk<WebClient.RequestHeadersUriSpec<*>>(relaxed = true)
+    private val headersSpec = mockk<WebClient.RequestHeadersSpec<*>>(relaxed = true)
+    private val responseSpec = mockk<WebClient.ResponseSpec>(relaxed = true)
+
     private lateinit var client: ChampionsClient
 
-    private val builder = mockk<Builder>()
-    private val webClient = mockk<WebClient>()
-    private val requestSpec = mockk<RequestHeadersUriSpec<*>>()
-    private val responseSpec = mockk<ResponseSpec>()
+    @BeforeTest
+    fun setup() {
+        every { webClientBuilder.build() } returns webClient
+        every { webClient.get() } returns uriSpec
+        every { uriSpec.uri(any<String>()) } returns headersSpec
+        every { headersSpec.retrieve() } returns responseSpec
 
-    @BeforeEach
-    fun setUp() {
-        every { builder.build() } returns webClient
-        client = ChampionsClient(builder)
+        client = ChampionsClient(
+            webClientBuilder = webClientBuilder,
+            baseUrl = "http://mock-api.com",
+            circuitBreaker = mockk(relaxed = true),
+            rateLimiter = mockk(relaxed = true),
+            retry = mockk(relaxed = true)
+        )
     }
 
     @Test
-    fun `fetchChampions should call API and parse response`() {
-        val rawJson = "fake-json"
-        val expected = listOf(Champion("2021", "max", "Max Verstappen", "Red Bull"))
+    fun `fetchFromApi returns parsed champion`() = runTest {
+        val json = """{ "mock": "response" }"""
+
+        every { responseSpec.bodyToMono(String::class.java) } returns Mono.just(json)
 
         mockkObject(ChampionParser)
+        every { ChampionParser.parseChampions(json) } returns listOf(
+            Champion("2020", "hamilton", "Lewis Hamilton", "Mercedes")
+        )
 
-        every { webClient.get() } returns requestSpec
-        every { requestSpec.uri("https://ergast.com/api/f1/driverStandings/1.json?limit=1000") } returns requestSpec
-        every { requestSpec.retrieve() } returns responseSpec
-        every { responseSpec.bodyToMono(String::class.java) } returns Mono.just(rawJson)
-        every { ChampionParser.parseChampions(rawJson) } returns expected
+        val result = client.fetchFromApi(2020)
 
-        val result = client.fetchChampions()
-
-        assertEquals(expected, result)
-
-        unmockkObject(ChampionParser)
+        assertNotNull(result)
+        assertEquals("2020", result.season)
     }
 }

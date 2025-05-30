@@ -2,46 +2,32 @@ package com.elkhami.f1_champions.champions.infrastructure.api
 
 import com.elkhami.f1_champions.champions.domain.model.Champion
 import com.elkhami.f1_champions.utils.loggerWithPrefix
-import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
+import io.github.resilience4j.circuitbreaker.CircuitBreaker
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import io.github.resilience4j.kotlin.ratelimiter.executeSuspendFunction
 import io.github.resilience4j.kotlin.retry.executeSuspendFunction
-import io.github.resilience4j.ratelimiter.RateLimiterRegistry
-import io.github.resilience4j.retry.RetryRegistry
-import org.springframework.beans.factory.annotation.Value
+import io.github.resilience4j.ratelimiter.RateLimiter
+import io.github.resilience4j.retry.Retry
+import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.awaitBody
 
 @Service
 class ChampionsClient(
     private val webClientBuilder: WebClient.Builder,
-    circuitBreakerRegistry: CircuitBreakerRegistry,
-    rateLimiterRegistry: RateLimiterRegistry,
-    retryRegistry: RetryRegistry
+    private val baseUrl: String,
+    private val circuitBreaker: CircuitBreaker,
+    private val rateLimiter: RateLimiter,
+    private val retry: Retry
 ) {
     private val logger = loggerWithPrefix()
 
-    @Value("\${f1.api.base-url}")
-    private lateinit var baseUrl: String
-
-    private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("champions-client")
-    private val rateLimiter = rateLimiterRegistry.rateLimiter("champions-rate-limiter")
-    private val retry = retryRegistry.retry("champions-retry") // <- New
-
     suspend fun fetchChampion(year: Int): Champion? {
-        val client = webClientBuilder.build()
-
         return runCatching {
             retry.executeSuspendFunction {
                 rateLimiter.executeSuspendFunction {
                     circuitBreaker.executeSuspendFunction {
-                        val response = client.get()
-                            .uri("$baseUrl/$year/driverStandings/1.json")
-                            .retrieve()
-                            .awaitBody<String>()
-
-                        ChampionParser.parseChampions(response).firstOrNull()
+                        fetchFromApi(year)
                             ?.also { logger.info("✅ Got champion for $year") }
                     }
                 }
@@ -50,5 +36,16 @@ class ChampionsClient(
             logger.info("⚠️ Failed to fetch champion for $year: ${it.message}")
             null
         }
+    }
+
+    internal suspend fun fetchFromApi(year: Int): Champion? {
+        val response = webClientBuilder.build()
+            .get()
+            .uri("$baseUrl/$year/driverStandings/1.json")
+            .retrieve()
+            .bodyToMono(String::class.java)
+            .awaitSingle()
+
+        return ChampionParser.parseChampions(response).firstOrNull()
     }
 }
