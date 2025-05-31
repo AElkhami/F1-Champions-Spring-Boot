@@ -1,7 +1,7 @@
 package com.elkhami.f1champions.champions.infrastructure.api
 
 import com.elkhami.f1champions.champions.domain.model.Champion
-import com.elkhami.f1champions.utils.loggerWithPrefix
+import com.elkhami.f1champions.core.logger.loggerWithPrefix
 import io.github.resilience4j.circuitbreaker.CircuitBreaker
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import io.github.resilience4j.kotlin.ratelimiter.executeSuspendFunction
@@ -33,7 +33,7 @@ class ChampionsClient(
                 }
             }
         }.getOrElse {
-            logger.info("⚠️ Failed to fetch champion for $year: ${it.message}")
+            logger.warn("⚠️ Failed to fetch champion for $year: ${it.message}")
             null
         }
     }

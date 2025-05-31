@@ -1,7 +1,7 @@
 package com.elkhami.f1champions.seasondetails.intrastructure.api
 
+import com.elkhami.f1champions.core.logger.loggerWithPrefix
 import com.elkhami.f1champions.seasondetails.domain.model.SeasonDetail
-import com.elkhami.f1champions.utils.loggerWithPrefix
 import io.github.resilience4j.kotlin.retry.executeSuspendFunction
 import io.github.resilience4j.retry.Retry
 import kotlinx.coroutines.reactor.awaitSingle
@@ -23,7 +23,7 @@ class SeasonDetailsClient(
                     .also { logger.info("✅ Got ${it.size} races for $season") }
             }
         }.getOrElse {
-            logger.info("⚠️ Failed to fetch details for $season: ${it.message}")
+            logger.warn("⚠️ Failed to fetch details for $season: ${it.message}")
             emptyList()
         }
     }

@@ -1,6 +1,7 @@
 package com.elkhami.f1champions
 
-import com.elkhami.f1champions.sync.application.DataSeeder
+import com.elkhami.f1champions.core.startup.AppStartupOrchestrator
+import com.elkhami.f1champions.core.startup.DataInitializer
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.BeforeTest
 
 class DataInitializerTest {
-    private val dataSeeder = mockk<DataSeeder>(relaxed = true)
+    private val appStartupOrchestrator = mockk<AppStartupOrchestrator>(relaxed = true)
     private val testDispatcher = StandardTestDispatcher()
     private val testScope = CoroutineScope(testDispatcher)
 
@@ -19,7 +20,7 @@ class DataInitializerTest {
 
     @BeforeTest
     fun setup() {
-        dataInitializer = DataInitializer(dataSeeder, testScope)
+        dataInitializer = DataInitializer(appStartupOrchestrator, testScope)
     }
 
     @Test
@@ -27,15 +28,15 @@ class DataInitializerTest {
         runTest {
             dataInitializer.onAppReady()
             testDispatcher.scheduler.advanceUntilIdle()
-            coVerify(exactly = 1) { dataSeeder.seed() }
+            coVerify(exactly = 1) { appStartupOrchestrator.seed() }
         }
 
     @Test
     fun `onAppReady should handle exception from dataSeeder seed`() =
         runTest {
-            coEvery { dataSeeder.seed() } throws RuntimeException("Test exception")
+            coEvery { appStartupOrchestrator.seed() } throws RuntimeException("Test exception")
             dataInitializer.onAppReady()
             testDispatcher.scheduler.advanceUntilIdle()
-            coVerify(exactly = 1) { dataSeeder.seed() }
+            coVerify(exactly = 1) { appStartupOrchestrator.seed() }
         }
 }

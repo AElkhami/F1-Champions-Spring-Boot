@@ -3,6 +3,7 @@ package com.elkhami.f1champions.sync.application
 import com.elkhami.f1champions.champions.domain.ChampionRepository
 import com.elkhami.f1champions.champions.domain.model.Champion
 import com.elkhami.f1champions.champions.infrastructure.api.ChampionsClient
+import com.elkhami.f1champions.core.startup.AppStartupOrchestrator
 import com.elkhami.f1champions.seasondetails.domain.SeasonDetailsRepository
 import com.elkhami.f1champions.seasondetails.domain.model.SeasonDetail
 import com.elkhami.f1champions.seasondetails.intrastructure.api.SeasonDetailsClient
@@ -13,18 +14,18 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-class DataSeederTest {
+class AppStartupOrchestratorTest {
     private val championsClient = mockk<ChampionsClient>()
     private val seasonDetailsClient = mockk<SeasonDetailsClient>()
     private val championRepository = mockk<ChampionRepository>()
     private val seasonDetailsRepository = mockk<SeasonDetailsRepository>()
 
-    private lateinit var seeder: DataSeeder
+    private lateinit var seeder: AppStartupOrchestrator
 
     @BeforeTest
     fun setup() {
         seeder =
-            DataSeeder(
+            AppStartupOrchestrator(
                 championsClient,
                 seasonDetailsClient,
                 championRepository,

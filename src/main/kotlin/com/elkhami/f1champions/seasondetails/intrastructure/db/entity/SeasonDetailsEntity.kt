@@ -4,6 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.io.Serializable
 import java.util.UUID
 
 @Entity
@@ -21,4 +22,4 @@ data class SeasonDetailsEntity(
     @Column(name = "winner_name")
     val winnerName: String,
     val constructor: String,
-)
+) : Serializable

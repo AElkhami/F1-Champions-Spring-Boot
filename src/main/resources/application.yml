@@ -19,6 +19,13 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  cache:
+    type: redis
+  data:
+    redis:
+      host: redis
+      port: 6379
+
   application:
     name: f1-champions-service
 

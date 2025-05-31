@@ -30,6 +30,10 @@ dependencies {
     // JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
+    // Redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+
     // WebFlux
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
@@ -96,6 +100,10 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.named("build") {
+    dependsOn("format")
 }
 
 tasks.named("check") {
