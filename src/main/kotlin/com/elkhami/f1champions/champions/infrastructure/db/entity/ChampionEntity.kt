@@ -4,6 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.io.Serializable
 import java.util.UUID
 
 @Entity
@@ -17,4 +18,4 @@ data class ChampionEntity(
     @Column(name = "driver_name")
     val driverName: String,
     val constructor: String,
-)
+) : Serializable
