@@ -5,7 +5,6 @@ import com.elkhami.f1champions.champions.domain.model.Champion
 import com.elkhami.f1champions.champions.domain.service.ChampionsService
 import com.elkhami.f1champions.champions.infrastructure.db.entity.ChampionEntity
 import com.elkhami.f1champions.champions.infrastructure.mapper.toDomain
-import com.elkhami.f1champions.core.logger.loggerWithPrefix
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
@@ -15,7 +14,6 @@ class F1ChampionsService(
 ) : ChampionsService {
     @Cacheable("champions")
     override fun getChampions(): List<Champion> {
-        loggerWithPrefix().info("➡️ Fetching champions from DB")
         return championRepo.findAll().map { it.toDomain() }
     }
 

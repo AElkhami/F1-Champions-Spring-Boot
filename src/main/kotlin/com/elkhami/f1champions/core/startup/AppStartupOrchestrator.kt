@@ -19,9 +19,14 @@ class AppStartupOrchestrator(
         for (year in fromYear..toYear) {
             runCatching {
                 championSeeder.seedIfMissing(year)
+            }.onFailure {
+                logger.error("❌ Error seeding champion for year $year")
+            }
+
+            runCatching {
                 seasonDetailsSeeder.seedIfMissing(year)
             }.onFailure {
-                logger.error("❌ Error seeding year $year")
+                logger.error("❌ Error seeding season details for year $year")
             }
         }
     }
